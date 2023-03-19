@@ -42,7 +42,7 @@ bool IsEmpty(Queue *queue)
 // 只有线性结构需要判断结构是否已满
 bool IsFull(Queue *queue)
 {
-    if ((queue->rear - queue->front) == MAX_SIZE)
+    if ((queue->rear + 1) % (MAX_SIZE) == queue->front)
     {
         return true;
     }
@@ -60,7 +60,9 @@ int Enqueue(int data, Queue *queue)
         return -1;
     }
     queue->data[queue->rear] = data;
-    queue->rear++;
+    // 通过mod操作实现index的循环
+    queue->rear = (queue->rear + 1) % (MAX_SIZE);
+    // queue->rear++;
     return data;
 }
 
@@ -72,19 +74,17 @@ int Dequeue(Queue *queue)
         return -1;
     }
     int tempData = queue->data[queue->front];
-    queue->front++;
+    queue->front = (queue->front + 1) % MAX_SIZE;
+    // queue->front++;
     return tempData;
 }
 
 void PrintLoopQueue(Queue *queue)
 {
-    for (int i = queue->front; i < queue->rear + 1; i++)
+    int length = (queue->rear - queue->front + MAX_SIZE) % MAX_SIZE;
+    for (int i = 0; i < length; i++)
     {
-        if (i >= MAX_SIZE)
-        {
-            break;
-        }
-        printf("%d", queue->data[i]);
+        printf("%d", queue->data[(queue->front + i) % MAX_SIZE]);
         printf("\n");
     }
 }
@@ -96,7 +96,6 @@ int main()
     Enqueue(2, queue);
     Enqueue(3, queue);
     Enqueue(4, queue);
-    Enqueue(5, queue);
     Dequeue(queue);
     Dequeue(queue);
     Dequeue(queue);
