@@ -68,6 +68,30 @@ void InThreadTree(Tree tree, TreeNode **pre)
     }
 }
 
+void PreThreadTree(Tree tree, TreeNode **pre)
+{
+    if (tree != NULL)
+    {
+        if (!tree->lchild)
+        {
+            tree->lchild = *pre;
+            tree->lTag = 1;
+        }
+        if ((*pre) != NULL && !(*pre)->rchild)
+        {
+
+            (*pre)->rchild = tree;
+            (*pre)->rTag = 1;
+        }
+        *pre = tree;
+        if (tree->lTag == 0)
+        {
+            PreThreadTree(tree->lchild, pre);
+            PreThreadTree(tree->rchild, pre);
+        }
+    }
+}
+
 TreeNode *GetFirst(TreeNode *treeNode)
 {
     while (treeNode->lTag == 0)
@@ -89,13 +113,34 @@ TreeNode *GetNext(TreeNode *treeNode)
     }
 }
 
-void PrintThreadTree(Tree tree)
+TreeNode *GetNextPreOrder(TreeNode *treeNode)
+{
+    if (treeNode->rTag == 1 || treeNode->lTag == 1)
+    {
+        return treeNode->rchild;
+    }
+    else
+    {
+        return treeNode->lchild;
+    }
+}
+
+void PrintInThreadTree(Tree tree)
 {
     TreeNode *node = GetFirst(tree);
     while (node != NULL)
     {
         printf("%c", node->data);
         node = GetNext(node);
+    }
+}
+
+void PrintPreThreadTree(Tree tree)
+{
+    while (tree != NULL)
+    {
+        printf("%c", tree->data);
+        tree = GetNextPreOrder(tree);
     }
 }
 
@@ -108,5 +153,13 @@ int main()
     InThreadTree(tree, &treeNode);
     treeNode->rchild = NULL;
     treeNode->rTag = 1;
-    PrintThreadTree(tree);
+    PrintInThreadTree(tree);
+    printf("\n");
+
+    tree = NULL;
+    index = 0;
+    TryCreateTree(&tree, "ABD##E##CF##G##", &index);
+    treeNode = NULL;
+    PreThreadTree(tree, &treeNode);
+    PrintPreThreadTree(tree);
 }
