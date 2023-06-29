@@ -38,6 +38,7 @@
 Unity的投影变换和图形学教材的投影变换的区别原因：
 - Unity假设裁剪空间位于Z轴的中心
 - Unity后续还有一步齐次除法的操作
+- 
 # Frustum 视椎体
 
 定义一个Frustum，需要fovY和aspect(长宽比)两个参数（near和far此时仍然位置 ）
